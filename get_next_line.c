@@ -1,4 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: epaksoy <epaksoy@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/07 15:09:27 by epaksoy           #+#    #+#             */
+/*   Updated: 2023/08/07 15:30:44 by epaksoy          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
+
+char	*get_left(char *line)
+{
+	int		a;
+	int		b;
+	char	*ret;
+
+	a = 0;
+	while (line[a] && line[a] != '\n')
+		a++;
+	if (!line[a])
+		return (NULL);
+	a++;
+	b = ft_strlen(line) - a;
+	ret = malloc(sizeof(char) * (b + 1));
+	b = 0;
+	while (line[a])
+	{
+		ret[b] = line[a];
+		b++;
+		a++;
+	}
+	ret[b] = '\0';
+	return (ret);
+}
 
 char	*read_buff(int fd, char *line)
 {

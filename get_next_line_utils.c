@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: epaksoy <epaksoy@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/07 15:09:31 by epaksoy           #+#    #+#             */
+/*   Updated: 2023/08/07 15:28:31 by epaksoy          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-int		ft_strlen(char *str)
+int	ft_strlen(char *str)
 {
 	int	n;
 
@@ -10,11 +22,23 @@ int		ft_strlen(char *str)
 	return (n);
 }
 
+int	ft_strlcpy(char *dest, char *src)
+{
+	int	a;
+
+	a = 0;
+	while (src[a])
+	{
+		dest[a] = src[a];
+		a++;
+	}
+	return (a);
+}
+
 char	*ft_join(char *left, char *buff)
 {
-	int		tot;
 	int		a;
-	int		b;
+	int		tot;
 	char	*ret;
 
 	if (!left)
@@ -26,27 +50,17 @@ char	*ft_join(char *left, char *buff)
 	}
 	if (!left || !buff)
 		return (NULL);
-	ret = malloc(ft_strlen(left) + ft_strlen(buff) + 1);
-	a = 0;
-	tot = 0;
-	while (left[a])
-	{
-		ret[tot] = left[a];
-		tot++;
-		a++;
-	}
-	b = 0;
-	while (buff[b])
-	{
-		ret[tot] = buff[b];
-		tot++;
-		b++;
-	}
+	tot = ft_strlen(left) + ft_strlen(buff);
+	ret = malloc(tot + 1);
+	if (!ret)
+		return (NULL);
+	a = ft_strlcpy(ret, left);
+	ft_strlcpy(ret + a, buff);
 	ret[tot] = '\0';
 	return (ret);
 }
 
-int		ft_strsrc(char *str, char c)
+int	ft_strsrc(char *str, char c)
 {
 	int	i;
 
@@ -79,31 +93,6 @@ char	*clean_line(char *line)
 	{
 		ret[b] = line[b];
 		b++;
-	}
-	ret[b] = '\0';
-	return (ret);
-}
-
-char	*get_left(char *line)
-{
-	int		a;
-	int		b;
-	char	*ret;
-
-	a = 0;
-	while (line[a] && line[a] != '\n')
-		a++;
-	if (!line[a])
-		return (NULL);
-	a++;
-	b = ft_strlen(line) - a;
-	ret = malloc(sizeof(char) * (b + 1));
-	b = 0;
-	while (line[a])
-	{
-		ret[b] = line[a];
-		b++;
-		a++;
 	}
 	ret[b] = '\0';
 	return (ret);
