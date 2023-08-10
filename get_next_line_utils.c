@@ -5,95 +5,101 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: epaksoy <epaksoy@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/07 15:09:31 by epaksoy           #+#    #+#             */
-/*   Updated: 2023/08/07 15:28:31 by epaksoy          ###   ########.fr       */
+/*   Created: 2023/08/10 17:38:11 by epaksoy           #+#    #+#             */
+/*   Updated: 2023/08/10 17:39:06 by epaksoy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	ft_strlen(char *str)
+char	*read_total_line(int fd, char *line)
 {
-	int	n;
+	char	data[BUFFER_SIZE + 1];
+	int		i;
 
-	n = 0;
-	while (str[n])
-		n++;
-	return (n);
-}
-
-int	ft_strlcpy(char *dest, char *src)
-{
-	int	a;
-
-	a = 0;
-	while (src[a])
+	i = 1;
+	while (!ft_strchr(line, '\n') && i != 0)
 	{
-		dest[a] = src[a];
-		a++;
-	}
-	return (a);
-}
-
-char	*ft_join(char *left, char *buff)
-{
-	int		a;
-	int		tot;
-	char	*ret;
-
-	if (!left)
-	{
-		left = malloc(sizeof(char) * 1);
-		if (!left)
+		i = read(fd, data, BUFFER_SIZE);
+		if (i == -1)
+		{
+			free(line);
 			return (NULL);
-		left[0] = '\0';
+		}
+		data[i] = '\0';
+		line = ft_strjoin(line, data);
 	}
-	if (!left || !buff)
-		return (NULL);
-	tot = ft_strlen(left) + ft_strlen(buff);
-	ret = malloc(tot + 1);
-	if (!ret)
-		return (NULL);
-	a = ft_strlcpy(ret, left);
-	ft_strlcpy(ret + a, buff);
-	ret[tot] = '\0';
-	return (ret);
+	return (line);
 }
 
-int	ft_strsrc(char *str, char c)
+char	*read_newline(char *line)
 {
-	int	i;
+	int		i;
+	char	*data;
 
 	i = 0;
-	if (!str)
+	if (!line[i])
 		return (0);
-	while (str[i])
+	while (line[i] && line[i] != '\n')
+		i++;
+	data = (char *)malloc(sizeof(char) * (i + 1 + (line[i] == '\n')));
+	if (!data)
+		return (0);
+	i = 0;
+	while (line[i] && line[i] != '\n')
 	{
-		if (str[i] == c)
-			return (1);
+		data[i] = line[i];
 		i++;
 	}
-	return (0);
+	if (line[i] == '\n')
+	{
+		data[i] = line[i];
+		i++;
+	}
+	data[i] = '\0';
+	return (data);
 }
 
-char	*clean_line(char *line)
+char	*before_line_delete(char *line)
 {
-	int		a;
-	int		b;
-	char	*ret;
+	int		i;
+	int		j;
+	char	*data;
 
-	a = 0;
-	while (line[a] && line[a] != '\n')
-		a++;
-	if (line[a] == '\n')
-		a++;
-	ret = malloc(sizeof(char) * (a + 1));
-	b = 0;
-	while (b < a)
+	i = 0;
+	while (line[i] && line[i] != '\n')
+		i++;
+	if (!line[i])
 	{
-		ret[b] = line[b];
-		b++;
+		free(line);
+		return (NULL);
 	}
-	ret[b] = '\0';
-	return (ret);
+	data = malloc(sizeof(char) * (ft_strlen(line) - i));
+	if (!data)
+	{
+		free(line);
+		return (NULL);
+	}
+	i++;
+	j = 0;
+	while (line[i])
+		data[j++] = line[i++];
+	data[j] = '\0';
+	free(line);
+	return (data);
+}
+
+char	*get_next_line(int fd)
+{
+	char		*buffer;
+	static char	*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	line = read_total_line(fd, line);
+	if (!line)
+		return (NULL);
+	buffer = read_newline(line);
+	line = before_line_delete(line);
+	return (buffer);
 }

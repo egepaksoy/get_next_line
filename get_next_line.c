@@ -5,73 +5,68 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: epaksoy <epaksoy@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/07 15:09:27 by epaksoy           #+#    #+#             */
-/*   Updated: 2023/08/07 15:30:44 by epaksoy          ###   ########.fr       */
+/*   Created: 2023/08/10 17:38:18 by epaksoy           #+#    #+#             */
+/*   Updated: 2023/08/10 17:38:19 by epaksoy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*get_left(char *line)
+size_t	ft_strlen(const char *str)
 {
-	int		a;
-	int		b;
-	char	*ret;
+	size_t	i;
 
-	a = 0;
-	while (line[a] && line[a] != '\n')
-		a++;
-	if (!line[a])
-		return (NULL);
-	a++;
-	b = ft_strlen(line) - a;
-	ret = malloc(sizeof(char) * (b + 1));
-	b = 0;
-	while (line[a])
-	{
-		ret[b] = line[a];
-		b++;
-		a++;
-	}
-	ret[b] = '\0';
-	return (ret);
-}
-
-char	*read_buff(int fd, char *line)
-{
-	char	*buff;
-	int		buff_size;
-
-	buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!buff)
-		return (NULL);
-	buff_size = 1;
-	while (!ft_strsrc(line, '\n') && buff_size != 0)
-	{
-		buff_size = read(fd, buff, BUFFER_SIZE);
-		if (buff_size == -1)
-		{
-			free(buff);
-			return (NULL);
-		}
-		buff[buff_size] = '\0';
-		line = ft_join(line, buff);
-	}
-	free(buff);
-	return (line);
-}
-
-char	*get_next_line(int fd)
-{
-	char		*line;
-	static char	*left_str;
-
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	i = 0;
+	if (!str)
 		return (0);
-	left_str = read_buff(fd, left_str);
-	if (!left_str)
+	while (str[i] != '\0')
+		i++;
+	return (i);
+}
+
+char	*ft_strchr(const char *str, int k)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	if (!k)
 		return (NULL);
-	line = clean_line(left_str);
-	left_str = get_left(left_str);
-	return (line);
+	while (str[i] != '\0')
+	{
+		if (str[i] == k)
+			return ((char *)str + i);
+		i++;
+	}
+	return (0);
+}
+
+char	*ft_strjoin(char *line, char *data)
+{
+	unsigned int	i;
+	unsigned int	j;
+	char			*s3;
+
+	if (!data)
+		return (NULL);
+	if (!line)
+	{
+		line = malloc(1);
+		if (!line)
+			return (NULL);
+		line[0] = '\0';
+	}
+	s3 = malloc(sizeof(char) * (ft_strlen(line) + ft_strlen(data) + 1));
+	if (!s3)
+		return (free(line), NULL);
+	i = -1;
+	while (line[++i] != '\0')
+		s3[i] = line[i];
+	j = -1;
+	while (data[++j] != '\0')
+		s3[i + j] = data[j];
+	s3[i + j] = '\0';
+	free(line);
+	return (s3);
 }

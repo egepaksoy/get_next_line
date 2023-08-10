@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: epaksoy <epaksoy@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/07 15:09:40 by epaksoy           #+#    #+#             */
-/*   Updated: 2023/08/07 15:30:59 by epaksoy          ###   ########.fr       */
+/*   Created: 2023/08/10 17:37:57 by epaksoy           #+#    #+#             */
+/*   Updated: 2023/08/10 17:39:21 by epaksoy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 5
+#  define BUFFER_SIZE 4
 # endif
 
-# include <unistd.h>
 # include <stdlib.h>
+# include <unistd.h>
 
-char	*get_left(char *line);
-char	*ft_join(char *left, char *buff);
-int		ft_strlen(char *str);
-int		ft_strsrc(char *str, char c);
-char	*clean_line(char *line);
 char	*get_next_line(int fd);
-char	*read_buff(int fd, char *line);
-int		ft_strlcpy(char *dest, char *src);
+char	*read_total_line(int fd, char *line);
+char	*read_newline(char *line);
+char	*before_line_delete(char *line);
+
+size_t	ft_strlen(const char *str);
+char	*ft_strchr(const char *str, int k);
+char	*ft_strjoin(char *line, char *data);
 
 #endif
